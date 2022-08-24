@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do List</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main id="main">
+        <h1>Will's To-Dos</h1>
+        <header>
+            <nav id="nav"></nav>
+        </header>
+        <!--idea: do nav tabs w/ an explainer page, or perhaps our different projects (lists of todos)?-->
+        <form action="" class="form" id="projectform">
+            <input type="text" name="title" id="title" placeholder="Project Title">
+            <button type="submit" onsubmit="">Create Project</button>
+            <!--on submit, should run and create a new nav tab, will this work?-->
+        </form>
+        <div class="outer">
+            <form action="" class="form" id="todoform">
+                <input type="text" name="title" id="title" placeholder="Title" required>
+                <input type="textarea" name="description" id="description" placeholder="Description" required>
+                <label for="duedate">Due Date:</label>
+                <input type="date" name="duedate" id="duedate" placeholder="Due Date" required>
+                <label for="priority">Priority:</label>
+                <input type="number" name="priority" id="priority" min="1" max="3" required>
+                <button type="submit" id="submit">Add</button>
+            </form>
+            <div class="content"></div>
+            <h2>Completed Tasks:</h2>
+            <div class="complete"></div>
+        </div>
+    </main>
+    <script src="index.js"></script>
+</body>
+</html>

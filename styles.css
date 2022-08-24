@@ -1,0 +1,10 @@
+body {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+.outer {
+    align-items: center;
+    justify-content: center;
+    background-color: lightpink;
+}
