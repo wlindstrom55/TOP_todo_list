@@ -8,3 +8,38 @@ body {
     justify-content: center;
     background-color: lightpink;
 }
+
+textarea {
+    resize: none;
+}
+
+#content {
+    background-color: aquamarine;
+}
+
+.tododiv {
+    display:flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.innerdiv {
+    margin: 10px;
+}
+
+.complete {
+    background-color: lightskyblue;
+}
+
+.del {
+    text-align: center;
+    background-color: lightsalmon;
+    margin: 0px 200px 0px 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.delbut {
+    
+}

@@ -16,22 +16,28 @@
         <!--idea: do nav tabs w/ an explainer page, or perhaps our different projects (lists of todos)?-->
         <form action="" class="form" id="projectform">
             <input type="text" name="title" id="title" placeholder="Project Title">
-            <button type="submit" onsubmit="">Create Project</button>
+            <button type="submit" onsubmit="">Create Tab</button>
             <!--on submit, should run and create a new nav tab, will this work?-->
         </form>
         <div class="outer">
-            <form action="" class="form" id="todoform">
+            <form onsubmit="addToDo(); return false" class="form" id="todoform">
                 <input type="text" name="title" id="title" placeholder="Title" required>
-                <input type="textarea" name="description" id="description" placeholder="Description" required>
+                <textarea name="description" id="description" placeholder="Description" rows="4" cols="40" required></textarea>
                 <label for="duedate">Due Date:</label>
                 <input type="date" name="duedate" id="duedate" placeholder="Due Date" required>
                 <label for="priority">Priority:</label>
                 <input type="number" name="priority" id="priority" min="1" max="3" required>
                 <button type="submit" id="submit">Add</button>
             </form>
-            <div class="content"></div>
+            <div class="cont">
+                <div class="content" id="content"></div>
+            </div> 
+        </div>
+        <div class="complete">
             <h2>Completed Tasks:</h2>
-            <div class="complete"></div>
+        </div>
+        <div class="del">
+            <button class="delbut" onclick="clearStorage(); return false">Clear Browser localStorage</button>
         </div>
     </main>
     <script src="index.js"></script>
