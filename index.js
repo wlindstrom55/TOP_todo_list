@@ -37,18 +37,14 @@ function storageAvailable(type) {
 //     console.log("localStorage error");
 //   }
 
-function setStorage() {
-    //let count = 1;
-    //setting:
-    // for(let todo of todos) {
-    //     let jsonObj = JSON.stringify(todo); //stringify the object
-    //     localStorage.setItem('todoobj', jsonObj); //save stringified obj as todoobj
-    // }
-    //I want to stringify the entire todo array 
-    let stringObjArr = JSON.stringify(todos);
+function setStorage() { 
+    //localStorage.remove('savedTodos'); //first, delete existing stored
+    localStorage.clear();
+    let stringObjArr = JSON.stringify(todos); //then stringify the entire todos array 
     localStorage.setItem('savedTodos', stringObjArr);
-
-    //this method will run through our stored data, creating the appropriate todo objects
+    //then maybe some kind of a check to see if there is saved info on browser, and an alert if successful or not
+    window.alert("You have saved to your browser!");
+    //might be able to put in some type of behavior on window close? should check
     //first check for existing data, if so, retrieve..also add to array so they iterate right
     //for each property of an object in our array....save as an object to local storage?
     //need to access object values, save?
@@ -57,11 +53,6 @@ function setStorage() {
 }
 
 function getStorage() {
-//    if(localStorage.getItem("todoobj")) {
-//     var savedTodos = JSON.parse(localStorage.getItem("todoobj"));
-//     todos.push(savedTodos);
-//    }
-//     todos.push()
     let savedJSON = localStorage.getItem('savedTodos');
     let newArr = JSON.parse(savedJSON);
     //this piece checks for obj in new array, skips it if it's already there.
@@ -73,26 +64,40 @@ function getStorage() {
     //     }
     // }
    todos.splice(0, todos.length); //cut out the whole array
-   todos = newArr;
+   todos = newArr; //this doesn't work if todos is a const...
 }
 
 function clearStorage() {
-    //should clear out all of local Storage?
-    //if exists, delete, plug into the button
+    //should clear out all of local Storage on button press?
+    //if exists, delete, plug into the button, or does it matter if it exists?
+    //localStorage.removeItem('savedTodos');
+    localStorage.clear();
+    window.alert("You have cleared your saved progress!");
 }
 
 const content = document.querySelector('.content');
 const container = document.querySelector('.cont')
 const main = document.getElementById('main');
-const complete = document.querySelector('.complete');
+const completed = document.querySelector('.complete');
+const completedSection = document.querySelector('.complete-section')
 const todos = [];
 
+function createTab() {
+    //create the dom element, with proper name!
+    //create a whole new array.
+    //tab switches, and you reiterate but with a different array of todos!
+    //should projects(tabs) have their own constructor, which has its own array of todos? This seems logical
+        //this way, you have some logic for switching tabs that then plugs in the appropriate todos array?
+    //of course, you would have to modify the saving system too to save that specific  project's array (under different name)
+}
 function removeToDo(index) {
     todos.splice(index, 1);
+    let domToRemove = document.getElementById(`row${index + 1}`);
+    domToRemove.remove();
     iterate();
 }
 
-function addToDo() {
+function addToDo() { //seems to work
     //should construct a new object based on inputs, put that object into the array, and then iterate.
     let title = document.getElementById('title').value;
     let desc = document.getElementById('description').value;
@@ -103,27 +108,22 @@ function addToDo() {
     iterate();
 }
 
-function moveComplete(index) {
-    let current = document.querySelector(`#row${index + 1}`); //does this work?
-    let complete = document.querySelector('.complete');
+function toggleComplete(index) { //seems to work now
+    let deleteEl = document.getElementById(`row${index + 1}`);
+    //just delete the old DOM element, mark object the other value, then iterate
     if(todos[index].complete === true) {
-        //change to false
-        //todos[index].complete = false;
-        current.remove();
-        complete.appendChild(current);
+        deleteEl.remove();
+        todos[index].complete = false;
+
+    } else if(todos[index].complete === false) {
+        //content.removeChild(deleteEl);
+        deleteEl.remove();
+        todos[index].complete = true;
     }
-    // if(todos[index] === false) {
-    //     //change to true
-    //     //todos[index] = true;
-        
-    // }
-    
     iterate();
-    //maybe in iterate, there is some logic to switch the element itself based on val of complete
-    //maybe a completed tasks section like Sam had
-    //first remove task from content, then move to complete
 }
-function deadlineCheck(date) {
+
+function deadlineCheck(date) { //needs work
     const now = new Date();
     //this line sets the hour of the current date to midnight so the comparison only returns 'true'
     //if the passed in date is at least yesterday
@@ -135,23 +135,37 @@ function deadlineCheck(date) {
     }
 }
 
-
 function iterate() {
+    //getStorage();
     let count = 1; //counter for element ids
 
-    let toDelete = document.querySelector('.content');
+    let toDelete = document.querySelector('.complete');
     toDelete.remove();
-    //delete existing content div for every refresh
-    let cont = document.createElement('div'); //then create new DOM element
+    let toDelete2 = document.querySelector('.content');
+    toDelete2.remove();
+    //delete existing content divs for every refresh
+
+    let comp = document.createElement('div');
+    comp.classList.add('complete');
+    completedSection.append(comp);
+
+    let cont = document.createElement('div'); 
+    //then create new DOM element
     cont.classList.add('content');
     cont.setAttribute('id', 'content');
     container.append(cont); 
 
-    for(let todo of todos) {
+    for(let todo of todos) { //note: could have something that reads obj trait and puts it in the right section,
+        //like if it's complete, or depending on priority!
         const row = document.createElement('div');
             row.setAttribute('id', `row${count}`);
             row.classList.add('tododiv');
-            cont.append(row);
+            //cont.append(row);
+            if(todo.complete === true) {
+                comp.append(row);
+            } else if(todo.complete === false) {
+                cont.append(row);
+            }
         const todoTitle = document.createElement('div');
             todoTitle.setAttribute('id', `title${count}`);
             todoTitle.classList.add('innerdiv');
@@ -179,12 +193,9 @@ function iterate() {
             markButton.addEventListener('click', (e) => {
                 let idString = e.target.id.toString(); //get String of the elements id
                 let index = idString.match(/\d/g); //pull the number off the string
-                moveComplete(index - 1);
-                
-                
-                //Book.prototype.toggleRead(myLibrary[bookRow.rowIndex - 1]);
-                //should access array for object based on its row number.
+                toggleComplete(index - 1);
                 //the - 1 is necessary to account for the zero-indexed array
+                //toggle as complete, then iterate
             }) 
             row.append(markButton);
         const remButton = document.createElement('button');
@@ -195,17 +206,15 @@ function iterate() {
                 let idString = e.target.id.toString();
                 let index = idString.match(/\d/g); //pulls any (compound) # from idString
                 //match is a string method that you guessed it, matches against a regex and retrieves that
-                removeToDo(index - 1);  
-                //get id of parent row, take that number that it is somehow, -1 for index, pass that into removebook
+                removeToDo(index - 1);
             })
             row.append(remButton);
         count++;
-        //perhaps there should be something here at the end to call iterateStorage and save content!
+        //perhaps there should be something here at the end to call iterateStorage and save content!?
     }
     console.log(todos); //test
 }
 
-//let count = 1
 const toDo = function(title, desc, dueDate, priority, complete) {
     this.title = title;
     this.desc = desc;
@@ -214,7 +223,7 @@ const toDo = function(title, desc, dueDate, priority, complete) {
     this.complete = complete;
 }
 
-const test = new toDo("Run", "Run two miles before this date", new Date('09/01/2023'), 3, true);
+const test = new toDo("Run", "Run two miles before this date", new Date('09/01/2023'), 3, false);
 //new Date() returns a Date object. Date() itself without new returns  string representation of the
 //current date and time, exactly as new Date().toString() does.
 todos.push(test);

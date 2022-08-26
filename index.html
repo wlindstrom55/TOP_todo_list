@@ -15,14 +15,14 @@
         </header>
         <!--idea: do nav tabs w/ an explainer page, or perhaps our different projects (lists of todos)?-->
         <form action="" class="form" id="projectform">
-            <input type="text" name="title" id="title" placeholder="Project Title">
+            <input type="text" name="ptitle" id="ptitle" placeholder="Project Title">
             <button type="submit" onsubmit="">Create Tab</button>
             <!--on submit, should run and create a new nav tab, will this work?-->
         </form>
         <div class="outer">
             <form onsubmit="addToDo(); return false" class="form" id="todoform">
                 <input type="text" name="title" id="title" placeholder="Title" required>
-                <textarea name="description" id="description" placeholder="Description" rows="4" cols="40" required></textarea>
+                <input name="description" id="description" placeholder="Description"  required>
                 <label for="duedate">Due Date:</label>
                 <input type="date" name="duedate" id="duedate" placeholder="Due Date" required>
                 <label for="priority">Priority:</label>
@@ -33,10 +33,12 @@
                 <div class="content" id="content"></div>
             </div> 
         </div>
-        <div class="complete">
+        <div class="complete-section">
             <h2>Completed Tasks:</h2>
+            <div class="complete"></div>
         </div>
-        <div class="del">
+        <div class="footerbutts">
+            <button class="savebut" onclick="setStorage(); return false"> Save Progress!</button>
             <button class="delbut" onclick="clearStorage(); return false">Clear Browser localStorage</button>
         </div>
     </main>
