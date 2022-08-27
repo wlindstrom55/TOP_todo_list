@@ -11,14 +11,17 @@
     <main id="main">
         <h1>Will's To-Dos</h1>
         <header>
-            <nav id="nav"></nav>
+            <form onsubmit="createTab(); return false" class="form" id="projectform">
+                <input type="text" name="ptitle" id="ptitle" placeholder="Project Title">
+                <button type="submit" onclick="createTab(); return false">Create Tab</button>
+                <!--on submit, should run and create a new nav tab, will this work?-->
+            </form>
+            <nav id="nav">
+                <div class="tab" id="tab1" onclick="tabSwitch(); return false">My Project</div>
+            </nav>
         </header>
         <!--idea: do nav tabs w/ an explainer page, or perhaps our different projects (lists of todos)?-->
-        <form action="" class="form" id="projectform">
-            <input type="text" name="ptitle" id="ptitle" placeholder="Project Title">
-            <button type="submit" onsubmit="">Create Tab</button>
-            <!--on submit, should run and create a new nav tab, will this work?-->
-        </form>
+        
         <div class="outer">
             <form onsubmit="addToDo(); return false" class="form" id="todoform">
                 <input type="text" name="title" id="title" placeholder="Title" required>
@@ -40,6 +43,7 @@
         <div class="footerbutts">
             <button class="savebut" onclick="setStorage(); return false"> Save Progress!</button>
             <button class="delbut" onclick="clearStorage(); return false">Clear Browser localStorage</button>
+            <button class="getbut" onclick="getStorage(); return false"> Retrieve saved localStorage</button>
         </div>
     </main>
     <script src="index.js"></script>

@@ -2,6 +2,7 @@
 //import { remove } from 'lodash';
 
 //const { isToday } = require("date-fns");
+//¡¡¡¡¡¡¡¡¡¡ inverted exclamation
 
 function storageAvailable(type) {
     let storage;
@@ -43,7 +44,7 @@ function setStorage() {
     let stringObjArr = JSON.stringify(todos); //then stringify the entire todos array 
     localStorage.setItem('savedTodos', stringObjArr);
     //then maybe some kind of a check to see if there is saved info on browser, and an alert if successful or not
-    window.alert("You have saved to your browser!");
+    window.alert("¡Saved to your browser!");
     //might be able to put in some type of behavior on window close? should check
     //first check for existing data, if so, retrieve..also add to array so they iterate right
     //for each property of an object in our array....save as an object to local storage?
@@ -53,18 +54,18 @@ function setStorage() {
 }
 
 function getStorage() {
-    let savedJSON = localStorage.getItem('savedTodos');
-    let newArr = JSON.parse(savedJSON);
-    //this piece checks for obj in new array, skips it if it's already there.
-    // for(let obj in newArr) {
-    //     if(todos.contains(obj)) {
-    //         continue;
-    //     } else {
-    //         todos.push(obj);
-    //     }
-    // }
-   todos.splice(0, todos.length); //cut out the whole array
-   todos = newArr; //this doesn't work if todos is a const...
+    //project thoughts - pass in an index for project to switch todos to save and load?
+    try {
+        let newArr = JSON.parse(localStorage.getItem('savedTodos') || []); //if getItem returns null, provides a default empty array
+        todos.splice(0, todos.length); //cut out the whole array
+        for(let savedTodo of newArr) { //again must use for of to loop over objects themselves
+        todos.push(savedTodo);
+        } 
+    } catch (err) {
+        //unexpected end of JSON input if there is nothing to parse
+        window.alert('¡ERROR! ¡There was nothing saved to localStorage!');
+    }
+   iterate();
 }
 
 function clearStorage() {
@@ -72,7 +73,7 @@ function clearStorage() {
     //if exists, delete, plug into the button, or does it matter if it exists?
     //localStorage.removeItem('savedTodos');
     localStorage.clear();
-    window.alert("You have cleared your saved progress!");
+    window.alert("¡Browser storage clear!");
 }
 
 const content = document.querySelector('.content');
@@ -80,16 +81,49 @@ const container = document.querySelector('.cont')
 const main = document.getElementById('main');
 const completed = document.querySelector('.complete');
 const completedSection = document.querySelector('.complete-section')
+const nav = document.getElementById('nav');
+//const tabs = document.querySelectorAll('.tab'); //all tabs
+
 const todos = [];
+const projects = [];
+let countTab = 2; //starts at 2 because of default tab
+let currentTab = 0; //counter for projects
+
+// tabs.addEventListener('onclick', () => {
+//     let id = e.target.id.toString();
+//     tabSwitch(id); 
+// });
 
 function createTab() {
-    //create the dom element, with proper name!
-    //create a whole new array.
+    let input = document.getElementById('ptitle');
+    let newTab = document.createElement('div');
+    newTab.classList.add('tab');
+    newTab.setAttribute('id', `tab${countTab}`);
+    nav.append(newTab);
+    newTab.innerHTML = input.value;
+    console.log(input.value);
+    countTab += 1;
+    //maybe here it should call the constructor while checking title //create a whole new array.
+    let newTitle = input.value;
+    let newProject = new project(newTitle);
+    projects.push(newProject);
+    input.value = "";
+    return false;
+    
     //tab switches, and you reiterate but with a different array of todos!
     //should projects(tabs) have their own constructor, which has its own array of todos? This seems logical
         //this way, you have some logic for switching tabs that then plugs in the appropriate todos array?
     //of course, you would have to modify the saving system too to save that specific  project's array (under different name)
 }
+
+function tabSwitch(id) {
+    let clickedTab = document.getElementById(`${id}`);
+    let num = clickedTab.match(/\d/g);
+    //what do we want this to do? It should call iterate with the required project index, and therefore array
+    //logic of when you click on a tab here. The event listener for the tab buttons themselves should call this
+    //then I 
+}
+
 function removeToDo(index) {
     todos.splice(index, 1);
     let domToRemove = document.getElementById(`row${index + 1}`);
@@ -136,7 +170,6 @@ function deadlineCheck(date) { //needs work
 }
 
 function iterate() {
-    //getStorage();
     let count = 1; //counter for element ids
 
     let toDelete = document.querySelector('.complete');
@@ -178,7 +211,7 @@ function iterate() {
             row.append(todoDesc);
         const dueDate = document.createElement('div');
             dueDate.setAttribute('id', `duedate${count}`);
-            dueDate.innerHTML = "Due Date: " + todo.dueDate.toString();
+            dueDate.innerHTML = "Due Date: " + todo.dueDate; //.toString()
             dueDate.classList.add('innerdiv');
             row.append(dueDate);
         const priority = document.createElement('td');
@@ -194,7 +227,7 @@ function iterate() {
                 let idString = e.target.id.toString(); //get String of the elements id
                 let index = idString.match(/\d/g); //pull the number off the string
                 toggleComplete(index - 1);
-                //the - 1 is necessary to account for the zero-indexed array
+                //the - 1 is for the zero-indexed array
                 //toggle as complete, then iterate
             }) 
             row.append(markButton);
@@ -205,14 +238,17 @@ function iterate() {
             remButton.addEventListener('click', (e) => {
                 let idString = e.target.id.toString();
                 let index = idString.match(/\d/g); //pulls any (compound) # from idString
-                //match is a string method that you guessed it, matches against a regex and retrieves that
                 removeToDo(index - 1);
             })
             row.append(remButton);
         count++;
-        //perhaps there should be something here at the end to call iterateStorage and save content!?
     }
     console.log(todos); //test
+    console.log(projects);
+}
+const project = function(title) {
+    this.title = title;
+    this.todosArray = [];
 }
 
 const toDo = function(title, desc, dueDate, priority, complete) {
@@ -223,6 +259,8 @@ const toDo = function(title, desc, dueDate, priority, complete) {
     this.complete = complete;
 }
 
+//const myProject = new project('MyProject', [new toDo('test', 'test', '04/04/0404', 3, false)]);
+
 const test = new toDo("Run", "Run two miles before this date", new Date('09/01/2023'), 3, false);
 //new Date() returns a Date object. Date() itself without new returns  string representation of the
 //current date and time, exactly as new Date().toString() does.
@@ -231,7 +269,6 @@ todos.push(test);
 const test2 = new toDo("finish this project", 'Make sure it works like you want', new Date('09/01/2025'), 1, false);
 todos.push(test2);
 
+const test3 = new toDo('Take a look at the project', 'This is a test', '09/01/2025', 1, true)
+todos.push(test3);
 iterate();
-//setStorage();
-// console.log(todos);
-//need to test getStorage();
