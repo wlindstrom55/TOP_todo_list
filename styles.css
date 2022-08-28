@@ -9,10 +9,21 @@ body {
     background-color: lightpink;
 }
 
-textarea {
-    resize: none;
+nav {
+    
 }
 
+#tabdisplay {
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.tab {
+    margin: 15px;
+    height: 20px;
+    width:auto;
+}
 #content {
     background-color: aquamarine;
 }

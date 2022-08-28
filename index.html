@@ -17,7 +17,8 @@
                 <!--on submit, should run and create a new nav tab, will this work?-->
             </form>
             <nav id="nav">
-                <div class="tab" id="tab1" onclick="tabSwitch(); return false">My Project</div>
+                <!--<div class="tab" id="tab1" onclick="tabSwitch(); return false">My Project</div>-->
+                <div id="tabdisplay"></div>
             </nav>
         </header>
         <!--idea: do nav tabs w/ an explainer page, or perhaps our different projects (lists of todos)?-->
@@ -33,6 +34,7 @@
                 <button type="submit" id="submit">Add</button>
             </form>
             <div class="cont">
+                <h2>Tasks:</h2>
                 <div class="content" id="content"></div>
             </div> 
         </div>
@@ -42,8 +44,10 @@
         </div>
         <div class="footerbutts">
             <button class="savebut" onclick="setStorage(); return false"> Save Progress!</button>
-            <button class="delbut" onclick="clearStorage(); return false">Clear Browser localStorage</button>
             <button class="getbut" onclick="getStorage(); return false"> Retrieve saved localStorage</button>
+            <br> <br>
+            <button class="tabbut" onclick="removeTab(); return false"> Delete current Project</button>
+            <button class="delbut" onclick="clearStorage(); return false">Clear Browser localStorage</button>
         </div>
     </main>
     <script src="index.js"></script>

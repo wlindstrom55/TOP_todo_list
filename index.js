@@ -38,11 +38,10 @@ function storageAvailable(type) {
 //     console.log("localStorage error");
 //   }
 
-function setStorage() { 
-    //localStorage.remove('savedTodos'); //first, delete existing stored
+function setStorage() { //works great!
     localStorage.clear();
-    let stringObjArr = JSON.stringify(todos); //then stringify the entire todos array 
-    localStorage.setItem('savedTodos', stringObjArr);
+    let stringObjArr = JSON.stringify(projects); //then stringify the entire projects array 
+    localStorage.setItem('savedProjects', stringObjArr);
     //then maybe some kind of a check to see if there is saved info on browser, and an alert if successful or not
     window.alert("¡Saved to your browser!");
     //might be able to put in some type of behavior on window close? should check
@@ -53,14 +52,16 @@ function setStorage() {
     //when should this run? probably in the conditional above that checks for localstorage.
 }
 
-function getStorage() {
-    //project thoughts - pass in an index for project to switch todos to save and load?
+function getStorage() { //works!
+    //Project thoughts - pass in an index for Project to switch todos to save and load?
     try {
-        let newArr = JSON.parse(localStorage.getItem('savedTodos') || []); //if getItem returns null, provides a default empty array
-        todos.splice(0, todos.length); //cut out the whole array
-        for(let savedTodo of newArr) { //again must use for of to loop over objects themselves
-        todos.push(savedTodo);
+        let newArr = JSON.parse(localStorage.getItem('savedProjects') || []); //if getItem returns null, provides a default empty array
+       // projects[projectIndex].todosArray.splice(0, projects[projectIndex].todosArray.length); //cut out the whole current array!
+       projects.splice(0, projects.length); 
+       for(let savedProject of newArr) { //again must use for of to loop over objects themselves
+            projects.push(savedProject);
         } 
+        projectIndex = 0; //reset current project
     } catch (err) {
         //unexpected end of JSON input if there is nothing to parse
         window.alert('¡ERROR! ¡There was nothing saved to localStorage!');
@@ -82,77 +83,99 @@ const main = document.getElementById('main');
 const completed = document.querySelector('.complete');
 const completedSection = document.querySelector('.complete-section')
 const nav = document.getElementById('nav');
-//const tabs = document.querySelectorAll('.tab'); //all tabs
+const tabDisplay = document.getElementById('tabdisplay')
+// const tabs = document.querySelectorAll('.tab'); //all tabs
 
-const todos = [];
+//const todos = [];
 const projects = [];
-let countTab = 2; //starts at 2 because of default tab
-let currentTab = 0; //counter for projects
+//let countTab = 2; //starts at 2 because of default tab //gonna need to change this to deal with tab creation in iterate()
+let currentTab = 0; //counter for projects //maybe delete?
+let projectIndex = 0; //this needs to be changed by tab switching logic to currect Project 
 
-// tabs.addEventListener('onclick', () => {
-//     let id = e.target.id.toString();
-//     tabSwitch(id); 
-// });
+// function iterateProjects() {
+//     projectIndex = 0; //set back to first project
+//     for(let proj of projects) {
+//         //just needs to render divs as tabs?
 
-function createTab() {
+//     }
+// }
+function createTab() { //maybe this should just push the created project object to projects array?
     let input = document.getElementById('ptitle');
     let newTab = document.createElement('div');
     newTab.classList.add('tab');
-    newTab.setAttribute('id', `tab${countTab}`);
-    nav.append(newTab);
-    newTab.innerHTML = input.value;
-    console.log(input.value);
-    countTab += 1;
+
+    if(projects.length === 0) { //if no projects, add in sample Project
+        newTab.setAttribute('id', `tab1`);
+        tabDisplay.append(newTab);
+        newTab.innerHTML = 'My Project';
+        let myProject = new Project('My Project', [new ToDo('This one is created in createTab()', 'test', '04/10/1992', 3, false)]);
+        projects.push(myProject);
+        console.log('default object created!');
+        return false;
+    } else if(projects.length > 0) {
+        newTab.setAttribute('id', `tab${projects.length + 1}`); //was previously countTab
+        tabDisplay.append(newTab);
+        newTab.innerHTML = input.value;
+        //countTab += 1;
     //maybe here it should call the constructor while checking title //create a whole new array.
-    let newTitle = input.value;
-    let newProject = new project(newTitle);
-    projects.push(newProject);
-    input.value = "";
-    return false;
-    
+        let newTitle = input.value;
+        let newProject = new Project(newTitle, [new ToDo('This should appear on new tabs', 'test', new Date(), 3, true)]);
+        projects.push(newProject);
+        input.value = ""; //move this to the todo form as well!
+        iterate();
+        return false;
+    }
     //tab switches, and you reiterate but with a different array of todos!
     //should projects(tabs) have their own constructor, which has its own array of todos? This seems logical
         //this way, you have some logic for switching tabs that then plugs in the appropriate todos array?
-    //of course, you would have to modify the saving system too to save that specific  project's array (under different name)
+    //of course, you would have to modify the saving system too to save that specific  Project's array (under different name)
 }
 
 function tabSwitch(id) {
-    let clickedTab = document.getElementById(`${id}`);
-    let num = clickedTab.match(/\d/g);
-    //what do we want this to do? It should call iterate with the required project index, and therefore array
+    let num = id.match(/\d/g);
+    projectIndex = num - 1; //-1 for 0-index array here instead of in iterate() like others
+    iterate();
     //logic of when you click on a tab here. The event listener for the tab buttons themselves should call this
-    //then I 
 }
 
-function removeToDo(index) {
-    todos.splice(index, 1);
+function removeTab() {
+    //to be called upon clicking not yet made delete button
+    projects.splice(projectIndex, 1);
+    projectIndex = 0; //reset current project
+    iterate();
+}
+
+function removeToDo(index) { //updated
+    let currentProj = projects[projectIndex];
+    currentProj.todosArray.splice(index, 1);
     let domToRemove = document.getElementById(`row${index + 1}`);
     domToRemove.remove();
     iterate();
 }
 
-function addToDo() { //seems to work
+function addToDo() { //updated
     //should construct a new object based on inputs, put that object into the array, and then iterate.
     let title = document.getElementById('title').value;
     let desc = document.getElementById('description').value;
     let dueDate = document.getElementById('duedate').value;
     let priority = document.getElementById('priority').value;
-    let newTodo = new toDo(title, desc, dueDate, priority, false); //task is not complete by default
-    todos.push(newTodo);
+    let newTodo = new ToDo(title, desc, dueDate, priority, false); //task is not complete by default
+    projects[projectIndex].todosArray.push(newTodo); //push new ToDo to current Project.todosArray
     iterate();
 }
 
-function toggleComplete(index) { //seems to work now
+function toggleComplete(index) {
+    let proj = projects[projectIndex];
     let deleteEl = document.getElementById(`row${index + 1}`);
     //just delete the old DOM element, mark object the other value, then iterate
-    if(todos[index].complete === true) {
+    if(proj.todosArray[index].complete === true) {
         deleteEl.remove();
-        todos[index].complete = false;
+        proj.todosArray[index].complete = false;
 
-    } else if(todos[index].complete === false) {
+    } else if(proj.todosArray[index].complete === false) {
         //content.removeChild(deleteEl);
         deleteEl.remove();
-        todos[index].complete = true;
+        proj.todosArray[index].complete = true;
     }
     iterate();
 }
@@ -176,19 +199,34 @@ function iterate() {
     toDelete.remove();
     let toDelete2 = document.querySelector('.content');
     toDelete2.remove();
+    let toDelete3 = document.querySelector('#tabdisplay');
+    toDelete3.remove();
     //delete existing content divs for every refresh
+    //then recreate them:
+    let tabDisp = document.createElement('div');
+    tabDisp.setAttribute('id', 'tabdisplay');
+    nav.append(tabDisp);
 
     let comp = document.createElement('div');
     comp.classList.add('complete');
     completedSection.append(comp);
 
     let cont = document.createElement('div'); 
-    //then create new DOM element
     cont.classList.add('content');
     cont.setAttribute('id', 'content');
     container.append(cont); 
 
-    for(let todo of todos) { //note: could have something that reads obj trait and puts it in the right section,
+    for(let proj of projects) { //create the DOM elements for each project
+        const newTab = document.createElement('div');
+        newTab.classList.add('tab');
+        newTab.setAttribute('id', `tab${projects.indexOf(proj) + 1}`);
+        newTab.innerHTML = proj.title;
+        tabDisp.append(newTab);
+    }
+
+    console.log(projectIndex + " - This is the current project!");
+
+    for(let todo of projects[projectIndex].todosArray) { //note: could have something that reads obj trait and puts it in the right section,
         //like if it's complete, or depending on priority!
         const row = document.createElement('div');
             row.setAttribute('id', `row${count}`);
@@ -241,17 +279,23 @@ function iterate() {
                 removeToDo(index - 1);
             })
             row.append(remButton);
+
+        document.querySelectorAll('.tab').forEach((tab) => { //event listener for tabs!
+            tab.addEventListener('click', (e) => {
+                let id = e.target.id.toString();
+                console.log('Event Listener is working!' + id);
+                tabSwitch(id); 
+            });
+        });
+
         count++;
-    }
-    console.log(todos); //test
-    console.log(projects);
-}
-const project = function(title) {
-    this.title = title;
-    this.todosArray = [];
+        }
+    //test console logs for showing current project todos and all projects arrays
+    // console.log(projects[projectIndex].todosArray);
+    // console.log(projects);
 }
 
-const toDo = function(title, desc, dueDate, priority, complete) {
+const ToDo = function(title, desc, dueDate, priority, complete) {
     this.title = title;
     this.desc = desc;
     this.dueDate = dueDate;
@@ -259,16 +303,22 @@ const toDo = function(title, desc, dueDate, priority, complete) {
     this.complete = complete;
 }
 
-//const myProject = new project('MyProject', [new toDo('test', 'test', '04/04/0404', 3, false)]);
+const Project = function(title, todosArray) {
+    this.title = title;
+    this.todosArray = todosArray;
+}
 
-const test = new toDo("Run", "Run two miles before this date", new Date('09/01/2023'), 3, false);
-//new Date() returns a Date object. Date() itself without new returns  string representation of the
-//current date and time, exactly as new Date().toString() does.
-todos.push(test);
+// const test = new ToDo("Run", "Run two miles before this date", new Date('09/01/2023'), 3, false);
+// //new Date() returns a Date object. Date() itself without new returns  string representation of the
+// //current date and time, exactly as new Date().toString() does.
+// todos.push(test);
 
-const test2 = new toDo("finish this project", 'Make sure it works like you want', new Date('09/01/2025'), 1, false);
-todos.push(test2);
+// const test2 = new ToDo("finish this Project", 'Make sure it works like you want', new Date('09/01/2025'), 1, false);
+// todos.push(test2);
 
-const test3 = new toDo('Take a look at the project', 'This is a test', '09/01/2025', 1, true)
-todos.push(test3);
+// const test3 = new ToDo('Take a look at the Project', 'This is a test', '09/01/2025', 1, true)
+// todos.push(test3);
+createTab();
 iterate();
+
+//console.log(projects);
