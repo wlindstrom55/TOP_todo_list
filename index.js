@@ -221,7 +221,9 @@ function iterate() {
         newTab.classList.add('tab');
         if(proj == projects[projectIndex]) { //if current project, apply 'selected' styling
             newTab.style.backgroundColor = 'darkgrey';
-            newTab.style.color = 'white';
+            newTab.style.color = 'black';
+            newTab.style.fontSize = '20px';
+            newTab.style.fontFamily = 'Verdana';
         }
         newTab.setAttribute('id', `tab${projects.indexOf(proj) + 1}`);
         newTab.innerHTML = proj.title;
@@ -307,9 +309,10 @@ function iterate() {
             priority.innerHTML = todo.priority;
             row.append(priority);
         const buttonDiv = document.createElement('div');
-                row.append(buttonDiv);
+            buttonDiv.classList.add('bdiv');
+            row.append(buttonDiv);
         const markButton = document.createElement('button');
-            markButton.classList.add('innerdiv');
+            markButton.classList.add('divbc');
             markButton.setAttribute('id', `mb${count}`)
             markButton.innerHTML = 'Complete';
             markButton.addEventListener('click', (e) => {
@@ -323,7 +326,7 @@ function iterate() {
         const remButton = document.createElement('button');
             remButton.innerHTML = 'Remove';
             remButton.setAttribute('id', `rembutton${count}`);
-            remButton.classList.add('innerdiv');
+            remButton.classList.add('divbd');
             remButton.addEventListener('click', (e) => {
                 let idString = e.target.id.toString();
                 let index = idString.match(/\d/g); //pulls any (compound) # from idString

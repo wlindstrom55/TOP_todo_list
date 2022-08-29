@@ -3,7 +3,10 @@ html {
 }
 body {
     background-image: url('./images/sunset.JPG');
-    /*background-color: burlywood;*/
+    background-color: black;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
     display: flex;
     flex-direction: column;
     text-align: center;
@@ -16,18 +19,22 @@ body {
 
 h2 {
     text-align: left;
+    color: white;
 }
 
 h3 {
     text-align: left;
     margin-bottom: 0px;
+    color: white;
 }
 
 .forform {
-    background-color: darkgray;
+    background-color: lightslategray;
+    color:mintcream;
     align-items: center;
     justify-content: center;
     text-align: center;
+    gap: 5px;
 }
 
 .conthead {
@@ -43,7 +50,7 @@ h3 {
 h1 {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 2em;
-    color: rebeccapurple;
+    color: chartreuse;
     text-align: left;
 }
 
@@ -95,22 +102,84 @@ h1 {
     
 }
 .innerdiv {
-    margin: 10px;
+    
 }
 
 .complete {
     background-color: lightskyblue;
 }
 
-.footerbuts {
-    text-align: center;
-    background-color: lightsalmon;
+.butts {
     margin: 0px 200px 0px 200px;
     display: flex;
     justify-content: center;
-    align-items: center;
+    gap: 10px;
 }
 
-.footerbuts {
-    margin-bottom: 10px;
+.savebut {
+    color: white;
+    background-color: rgb(29, 95, 217);
+    border: 2px solid rgb(47, 224, 255);
+}
+.savebut:hover {
+    background-color: lightblue;
+}
+.getbut {
+    color: white;
+    background-color: green;
+    border: 2px solid chartreuse;
+}
+.getbut:hover {
+    background-color: lightgreen;
+}
+
+.delbut {
+color: lightcyan;
+border: 2px solid orange;
+background-color: crimson;
+}
+.delbut:hover {
+    background-color: black;
+}
+
+.tabbut {
+    color:red;
+    background-color: black;
+    border: 2px solid red;
+}
+.tabbut:hover {
+    background-color: lightslategray;
+}
+
+.formbutt {
+    color:white;
+    background-color: cornflowerblue;
+    border: 1px solid white;
+}
+.formbutt:hover {
+    background-color: blue;
+}
+
+.bdiv {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.divbc {
+    color: aqua;
+    background-color: blue;
+}
+.divbc:hover {
+    color: blue;
+    background-color: lightskyblue;
+}
+
+.divbd {
+    color: white;
+    background-color: crimson;
+}
+.divbd:hover {
+    color: darkred;
+    background-color: lightcoral;
 }
