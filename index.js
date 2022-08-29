@@ -38,30 +38,24 @@ function storageAvailable(type) {
 //     console.log("localStorage error");
 //   }
 
-function setStorage() { //works great!
+function setStorage() { 
     localStorage.clear();
     let stringObjArr = JSON.stringify(projects); //then stringify the entire projects array 
     localStorage.setItem('savedProjects', stringObjArr);
     //then maybe some kind of a check to see if there is saved info on browser, and an alert if successful or not
     window.alert("¡Saved to your browser!");
     //might be able to put in some type of behavior on window close? should check
-    //first check for existing data, if so, retrieve..also add to array so they iterate right
-    //for each property of an object in our array....save as an object to local storage?
-    //need to access object values, save?
-    //would we also then need another method to "offload" and retrieve those saved values?
-    //when should this run? probably in the conditional above that checks for localstorage.
 }
 
-function getStorage() { //works!
-    //Project thoughts - pass in an index for Project to switch todos to save and load?
+function getStorage() {
     try {
         let newArr = JSON.parse(localStorage.getItem('savedProjects') || []); //if getItem returns null, provides a default empty array
-       // projects[projectIndex].todosArray.splice(0, projects[projectIndex].todosArray.length); //cut out the whole current array!
-       projects.splice(0, projects.length); 
-       for(let savedProject of newArr) { //again must use for of to loop over objects themselves
+        projects.splice(0, projects.length); 
+        for(let savedProject of newArr) { 
             projects.push(savedProject);
         } 
         projectIndex = 0; //reset current project
+        window.alert('localStorage retrieved');
     } catch (err) {
         //unexpected end of JSON input if there is nothing to parse
         window.alert('¡ERROR! ¡There was nothing saved to localStorage!');
@@ -88,47 +82,33 @@ const tabDisplay = document.getElementById('tabdisplay')
 
 //const todos = [];
 const projects = [];
-//let countTab = 2; //starts at 2 because of default tab //gonna need to change this to deal with tab creation in iterate()
-let currentTab = 0; //counter for projects //maybe delete?
-let projectIndex = 0; //this needs to be changed by tab switching logic to currect Project 
+let projectIndex = 0; //this value determines which project is being displayed
 
-// function iterateProjects() {
-//     projectIndex = 0; //set back to first project
-//     for(let proj of projects) {
-//         //just needs to render divs as tabs?
-
-//     }
-// }
-function createTab() { //maybe this should just push the created project object to projects array?
+function createTab() {
     let input = document.getElementById('ptitle');
     let newTab = document.createElement('div');
     newTab.classList.add('tab');
 
-    if(projects.length === 0) { //if no projects, add in sample Project
+    if(projects.length === 0) { //if no projects
         newTab.setAttribute('id', `tab1`);
         tabDisplay.append(newTab);
         newTab.innerHTML = 'My Project';
-        let myProject = new Project('My Project', [new ToDo('This one is created in createTab()', 'test', '04/10/1992', 3, false)]);
+        let myProject = new Project('My Project', [new ToDo('Mark this as complete, or delete!', 'You should see this upon page refresh. You can edit this notes div!!', new Date(), 3, false)]);
         projects.push(myProject);
         console.log('default object created!');
         return false;
-    } else if(projects.length > 0) {
-        newTab.setAttribute('id', `tab${projects.length + 1}`); //was previously countTab
+    } else if(projects.length > 0) { //if project is being created
+        newTab.setAttribute('id', `tab${projects.length + 1}`);
         tabDisplay.append(newTab);
         newTab.innerHTML = input.value;
-        //countTab += 1;
-    //maybe here it should call the constructor while checking title //create a whole new array.
         let newTitle = input.value;
-        let newProject = new Project(newTitle, [new ToDo('This should appear on new tabs', 'test', new Date(), 3, true)]);
+        let newProject = new Project(newTitle, [new ToDo('This should appear on newly created tabs', 'Try to delete this', new Date(), 3, true)]);
         projects.push(newProject);
-        input.value = ""; //move this to the todo form as well!
+        input.value = ""; //use this in the todo form as well!
         iterate();
         return false;
     }
-    //tab switches, and you reiterate but with a different array of todos!
-    //should projects(tabs) have their own constructor, which has its own array of todos? This seems logical
-        //this way, you have some logic for switching tabs that then plugs in the appropriate todos array?
-    //of course, you would have to modify the saving system too to save that specific  Project's array (under different name)
+    iterate();
 }
 
 function tabSwitch(id) {
@@ -136,6 +116,18 @@ function tabSwitch(id) {
     projectIndex = num - 1; //-1 for 0-index array here instead of in iterate() like others
     iterate();
     //logic of when you click on a tab here. The event listener for the tab buttons themselves should call this
+}
+
+function tabActive(id) { //this handles the styling for the tabs when clicked
+    let active = document.getElementById(`${id}`);
+    let reset = document.querySelectorAll('.tab');
+    reset.forEach((tab) => { //set back to default colors
+        tab.style.backgroundColor = 'lightslategrey';
+        tab.style.color = 'lightgrey';
+    });
+    active.style.backgroundColor = 'darkgrey';
+    active.style.color = 'white';
+    iterate(); //hover pseudoclass gets messed up if iterate() isn't invoked here
 }
 
 function removeTab() {
@@ -153,14 +145,22 @@ function removeToDo(index) { //updated
     iterate();
 }
 
-function addToDo() { //updated
+function addToDo() {
     //should construct a new object based on inputs, put that object into the array, and then iterate.
     let title = document.getElementById('title').value;
     let desc = document.getElementById('description').value;
     let dueDate = document.getElementById('duedate').value;
     let priority = document.getElementById('priority').value;
+    
     let newTodo = new ToDo(title, desc, dueDate, priority, false); //task is not complete by default
     projects[projectIndex].todosArray.push(newTodo); //push new ToDo to current Project.todosArray
+
+    //clear out the inputs:
+    document.getElementById('title').value = '';
+    document.getElementById('description').value = '';
+    document.getElementById('duedate').value = '';
+    document.getElementById('priority').value = '';
+
     iterate();
 }
 
@@ -216,51 +216,102 @@ function iterate() {
     cont.setAttribute('id', 'content');
     container.append(cont); 
 
-    for(let proj of projects) { //create the DOM elements for each project
+    for(let proj of projects) { //create the DOM tab elements for each 'project' in array
         const newTab = document.createElement('div');
         newTab.classList.add('tab');
+        if(proj == projects[projectIndex]) { //if current project, apply 'selected' styling
+            newTab.style.backgroundColor = 'darkgrey';
+            newTab.style.color = 'white';
+        }
         newTab.setAttribute('id', `tab${projects.indexOf(proj) + 1}`);
         newTab.innerHTML = proj.title;
         tabDisp.append(newTab);
     }
 
-    console.log(projectIndex + " - This is the current project!");
+    let countComplete = 0; //counter for # of todos in list marked complete
+    let count1 = 0;
 
-    for(let todo of projects[projectIndex].todosArray) { //note: could have something that reads obj trait and puts it in the right section,
-        //like if it's complete, or depending on priority!
+    for(let todo of projects[projectIndex].todosArray) { //for the active project, display its todos.
+        if(todo.complete == true) {
+            countComplete++;
+        }
+        if(count1 == 0) { //for our first row(todo), we want a header row which labels our columns
+            let headRow = document.createElement('div');
+            headRow.setAttribute('class', 'headrow');
+            cont.append(headRow); //could rework this to also display under complete
+            let headTitle = document.createElement('div');
+                headTitle.classList.add('headdiv');
+                headTitle.innerHTML = 'Title'
+                headRow.append(headTitle);
+            let headNotes = document.createElement('div');
+                headNotes.classList.add('headdiv');
+                headNotes.innerHTML = 'Notes'
+                headRow.append(headNotes);
+            let headDate = document.createElement('div')
+                headDate.classList.add('headdiv');
+                headDate.innerHTML = 'Due Date';
+                headRow.append(headDate);
+            let headPriority = document.createElement('div');
+                headPriority.classList.add('headdiv')
+                headPriority.innerHTML = 'Priority';
+                headRow.append(headPriority);
+            let headButts = document.createElement('div');
+                headButts.classList.add('headdiv');
+                headButts.innerHTML = 'Options';
+                headRow.append(headButts);
+        }
+        count1++;
+
         const row = document.createElement('div');
             row.setAttribute('id', `row${count}`);
             row.classList.add('tododiv');
-            //cont.append(row);
-            if(todo.complete === true) {
-                comp.append(row);
-            } else if(todo.complete === false) {
-                cont.append(row);
-            }
+            let intPriority = parseInt(todo.priority);
+                if(intPriority === 3) {
+                    //default style at the moment.
+                } else if (intPriority === 2) {
+                    row.style.backgroundColor = 'orange';
+                } else {
+                    row.style.backgroundColor = 'red';
+                    row.style.color = 'white';
+                }    
+
+                if(todo.complete === true) {
+                    comp.append(row);
+                    row.style.backgroundColor = 'gray';
+                    row.style.color = 'orange';
+                } else if(todo.complete === false) {
+                    cont.append(row);
+                }
+
         const todoTitle = document.createElement('div');
             todoTitle.setAttribute('id', `title${count}`);
             todoTitle.classList.add('innerdiv');
-            todoTitle.innerHTML = "Title: " + todo.title;
+            todoTitle.innerHTML = todo.title;
+            //todoTitle.setAttribute('contenteditable', 'true');
             row.append(todoTitle);
         const todoDesc = document.createElement('div');
             todoDesc.setAttribute('id', `desc${count}`);
+            todoDesc.setAttribute('name', 'editdesc');
             todoDesc.classList.add('innerdiv');
-            todoDesc.innerHTML = "Description: " + todo.desc;
+            todoDesc.innerHTML = todo.desc;
+            todoDesc.setAttribute('contenteditable', 'true');
             row.append(todoDesc);
         const dueDate = document.createElement('div');
             dueDate.setAttribute('id', `duedate${count}`);
-            dueDate.innerHTML = "Due Date: " + todo.dueDate; //.toString()
+            dueDate.innerHTML = todo.dueDate;
             dueDate.classList.add('innerdiv');
             row.append(dueDate);
         const priority = document.createElement('td');
             priority.setAttribute('id', `priority${count}`);
             priority.classList.add('innerdiv');
-            priority.innerHTML = "Priority Level: " + todo.priority;
+            priority.innerHTML = todo.priority;
             row.append(priority);
+        const buttonDiv = document.createElement('div');
+                row.append(buttonDiv);
         const markButton = document.createElement('button');
             markButton.classList.add('innerdiv');
             markButton.setAttribute('id', `mb${count}`)
-            markButton.innerHTML = 'Mark Complete';
+            markButton.innerHTML = 'Complete';
             markButton.addEventListener('click', (e) => {
                 let idString = e.target.id.toString(); //get String of the elements id
                 let index = idString.match(/\d/g); //pull the number off the string
@@ -268,7 +319,7 @@ function iterate() {
                 //the - 1 is for the zero-indexed array
                 //toggle as complete, then iterate
             }) 
-            row.append(markButton);
+            buttonDiv.append(markButton);
         const remButton = document.createElement('button');
             remButton.innerHTML = 'Remove';
             remButton.setAttribute('id', `rembutton${count}`);
@@ -278,22 +329,38 @@ function iterate() {
                 let index = idString.match(/\d/g); //pulls any (compound) # from idString
                 removeToDo(index - 1);
             })
-            row.append(remButton);
+            buttonDiv.append(remButton);
 
-        document.querySelectorAll('.tab').forEach((tab) => { //event listener for tabs!
-            tab.addEventListener('click', (e) => {
+        
+        count++;
+        } //end of large for..of
+
+        document.getElementsByName('editdesc').forEach((descEl) => { //event listeners for editable elements!
+            descEl.addEventListener('input', (e) => {
                 let id = e.target.id.toString();
-                console.log('Event Listener is working!' + id);
-                tabSwitch(id); 
+                let index = id.match(/\d/g);
+                //this should set the desc value within a given todo after editing?
+                projects[projectIndex].todosArray[index - 1].desc = e.target.innerHTML;
             });
         });
 
-        count++;
+        //if the chosen array is empty, or all of its elements are marked complete, add in a reminder to create new tasks
+        if((!projects[projectIndex].todosArray.length) || (projects[projectIndex].todosArray.length === countComplete)) {
+            let advice = document.createElement('div');
+            advice.classList.add('advice');
+            advice.innerHTML = 'Currently there is nothing to do, add a task!';
+            cont.append(advice);
         }
-    //test console logs for showing current project todos and all projects arrays
-    // console.log(projects[projectIndex].todosArray);
-    // console.log(projects);
-}
+
+        //here, adding the event listeners for each of the tabs (each project)
+        document.querySelectorAll('.tab').forEach((tab) => {
+            tab.addEventListener('click', (e) => {
+                let id = e.target.id.toString();
+                tabSwitch(id);
+                tabActive(id);
+            });
+        });
+} //end iterate()
 
 const ToDo = function(title, desc, dueDate, priority, complete) {
     this.title = title;
@@ -308,17 +375,5 @@ const Project = function(title, todosArray) {
     this.todosArray = todosArray;
 }
 
-// const test = new ToDo("Run", "Run two miles before this date", new Date('09/01/2023'), 3, false);
-// //new Date() returns a Date object. Date() itself without new returns  string representation of the
-// //current date and time, exactly as new Date().toString() does.
-// todos.push(test);
-
-// const test2 = new ToDo("finish this Project", 'Make sure it works like you want', new Date('09/01/2025'), 1, false);
-// todos.push(test2);
-
-// const test3 = new ToDo('Take a look at the Project', 'This is a test', '09/01/2025', 1, true)
-// todos.push(test3);
 createTab();
 iterate();
-
-//console.log(projects);

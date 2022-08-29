@@ -1,4 +1,9 @@
+html {
+    
+}
 body {
+    background-image: url('./images/sunset.JPG');
+    /*background-color: burlywood;*/
     display: flex;
     flex-direction: column;
     text-align: center;
@@ -6,11 +11,40 @@ body {
 .outer {
     align-items: center;
     justify-content: center;
-    background-color: lightpink;
+    width: 100%;
 }
 
-nav {
-    
+h2 {
+    text-align: left;
+}
+
+h3 {
+    text-align: left;
+    margin-bottom: 0px;
+}
+
+.forform {
+    background-color: darkgray;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.conthead {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+#head1 {
+    text-align: left;
+}
+h1 {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 2em;
+    color: rebeccapurple;
+    text-align: left;
 }
 
 #tabdisplay {
@@ -20,20 +54,46 @@ nav {
 }
 
 .tab {
+    border-radius: 5%;
+    padding: 5px;
     margin: 15px;
-    height: 20px;
-    width:auto;
+    margin-bottom: -1px;
+    background-color: lightslategray;
+    color: lightgray;
+    border: 2px solid black;
 }
-#content {
+
+.tab:hover {
+    background-color: black;
+    color: white;
+}
+
+.cont {
+    /* display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr; */
     background-color: aquamarine;
 }
 
 .tododiv {
     display:flex;
     flex-direction: row;
+    justify-content: space-evenly;
     flex-wrap: nowrap;
+    border: 1px solid black;
 }
 
+.headrow {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    background-color: darkgreen;
+    color: orange;
+}
+
+.headdiv {
+    
+}
 .innerdiv {
     margin: 10px;
 }
@@ -51,6 +111,6 @@ nav {
     align-items: center;
 }
 
-.delbut {
-
+.footerbuts {
+    margin-bottom: 10px;
 }
