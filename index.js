@@ -112,7 +112,7 @@ function createTab() {
 }
 
 function tabSwitch(id) {
-    let num = id.match(/\d/g);
+    let num = id.match(/\d+/g);
     projectIndex = num - 1; //-1 for 0-index array here instead of in iterate() like others
     iterate();
     //logic of when you click on a tab here. The event listener for the tab buttons themselves should call this
@@ -148,11 +148,11 @@ function removeToDo(index) { //updated
 function addToDo() {
     //should construct a new object based on inputs, put that object into the array, and then iterate.
     let title = document.getElementById('title').value;
-    let desc = document.getElementById('description').value;
+    let descr = document.getElementById('description').value;
     let dueDate = document.getElementById('duedate').value;
     let priority = document.getElementById('priority').value;
     
-    let newTodo = new ToDo(title, desc, dueDate, priority, false); //task is not complete by default
+    let newTodo = new ToDo(title, descr, dueDate, priority, false); //task is not complete by default
     projects[projectIndex].todosArray.push(newTodo); //push new ToDo to current Project.todosArray
 
     //clear out the inputs:
@@ -284,7 +284,6 @@ function iterate() {
                 } else if(todo.complete === false) {
                     cont.append(row);
                 }
-
         const todoTitle = document.createElement('div');
             todoTitle.setAttribute('id', `title${count}`);
             todoTitle.classList.add('innerdiv');
@@ -317,7 +316,7 @@ function iterate() {
             markButton.innerHTML = 'Complete';
             markButton.addEventListener('click', (e) => {
                 let idString = e.target.id.toString(); //get String of the elements id
-                let index = idString.match(/\d/g); //pull the number off the string
+                let index = idString.match(/\d+/g); //pull the number off the string
                 toggleComplete(index - 1);
                 //the - 1 is for the zero-indexed array
                 //toggle as complete, then iterate
@@ -329,11 +328,10 @@ function iterate() {
             remButton.classList.add('divbd');
             remButton.addEventListener('click', (e) => {
                 let idString = e.target.id.toString();
-                let index = idString.match(/\d/g); //pulls any (compound) # from idString
+                let index = idString.match(/\d+/g); //pulls any (compound) # from idString
                 removeToDo(index - 1);
             })
             buttonDiv.append(remButton);
-
         
         count++;
         } //end of large for..of
@@ -341,7 +339,7 @@ function iterate() {
         document.getElementsByName('editdesc').forEach((descEl) => { //event listeners for editable elements!
             descEl.addEventListener('input', (e) => {
                 let id = e.target.id.toString();
-                let index = id.match(/\d/g);
+                let index = id.match(/\d+/g);
                 //this should set the desc value within a given todo after editing?
                 projects[projectIndex].todosArray[index - 1].desc = e.target.innerHTML;
             });

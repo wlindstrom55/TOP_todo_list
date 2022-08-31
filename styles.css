@@ -1,15 +1,18 @@
 html {
-    
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 body {
-    background-image: url('./images/sunset.JPG');
+    background-image: url('./images/husker.JPG');
     background-color: black;
-    background-position: center center;
-    background-repeat: no-repeat;
+    background-position:center center;
+    background-repeat:no-repeat;
     background-size: cover;
     display: flex;
     flex-direction: column;
     text-align: center;
+    min-height: 100%;
 }
 .outer {
     align-items: center;
@@ -20,12 +23,14 @@ body {
 h2 {
     text-align: left;
     color: white;
+    background-color: black;
 }
 
 h3 {
     text-align: left;
     margin-bottom: 0px;
     color: white;
+    background-color: black;
 }
 
 .forform {
@@ -48,10 +53,13 @@ h3 {
     text-align: left;
 }
 h1 {
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-family: 'Uncial Antiqua', cursive;
     font-size: 2em;
-    color: chartreuse;
-    text-align: left;
+    color:rgb(222, 44, 12);
+    text-align: center;
+    background-color: black;
+    width:15em;
+    border-radius: 45%;
 }
 
 #tabdisplay {
@@ -76,27 +84,33 @@ h1 {
 }
 
 .cont {
-    /* display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr; */
+    /*this is styling for default priority 3 todos*/
     background-color: aquamarine;
 }
 
+.headrow {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr 1fr .5fr;
+    background-color: steelblue;
+    color: white;
+}
 .tododiv {
-    display:flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    flex-wrap: nowrap;
+    
+    display: grid;
+    /*grid-template-rows: 40px 60px 20px 10px 40px; 
+    We apparently just need columns. Reminder that fr are just fractions of available space! */
+    grid-template-columns: 1fr 2fr 1fr 1fr .5fr;
     border: 1px solid black;
 }
 
-.headrow {
+/* .headrow {
+        OLD STYLING FOR HEADROW
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
     background-color: darkgreen;
     color: orange;
-}
+} */
 
 .headdiv {
     
@@ -120,6 +134,7 @@ h1 {
     color: white;
     background-color: rgb(29, 95, 217);
     border: 2px solid rgb(47, 224, 255);
+    border-radius: 5px;
 }
 .savebut:hover {
     background-color: lightblue;
@@ -128,6 +143,7 @@ h1 {
     color: white;
     background-color: green;
     border: 2px solid chartreuse;
+    border-radius: 5px;
 }
 .getbut:hover {
     background-color: lightgreen;
@@ -182,4 +198,8 @@ background-color: crimson;
 .divbd:hover {
     color: darkred;
     background-color: lightcoral;
+}
+
+#nav {
+    margin-bottom: -20px;
 }
