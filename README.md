@@ -1,5 +1,5 @@
 # The Odin Project - Todo List
-- Live project here: https://wlindstrom55.github.io/TOP_todo_list/
+- Live project here: https://wlindstrom55.github.io/odin-todo-list/
 - Instructions here: https://www.theodinproject.com/lessons/node-path-javascript-todo-list 
 
 - I designed and built this myself trying to loosely follow the instructions. Looking back over them now I currently can't expand a single todo and see its details, although you can edit the 'notes' portion of a todo. Maybe that's something I will add later.
